@@ -10,24 +10,27 @@ export function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-
 export const CoinsTable = () => {
 
     const navigate = useNavigate();
 
     const [coins, setCoins] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
     const [search, setSearch] = useState('')
     const [page, setPage] = useState(1);
 
     const fetchCoins = async () => {
-        setLoading(true)
-        const { data } = await axios.get(CoinList())
-        setCoins(data);
-        setLoading(false)
+        try {
+            setLoading(true)
+            const { data } = await axios.get(CoinList())
+            setCoins(data);
+            setLoading(false)
+            setError(null)
+        } catch (err) {
+            setError(err)
+        }
     }
-
-
 
     useEffect(() => {
         fetchCoins()
@@ -59,8 +62,18 @@ export const CoinsTable = () => {
 
     const classes = useStyles();
 
+    if (error) {
+        return (
+            <div>
+                Oh no! Something went wrong {error.message}
+                <button onClick={() => fetchCoins()}>Try Again</button>
+            </div>
+        )
+    }
+
     return (
-        <Container style={{ textAlign: 'center' }}>
+
+        <Container style={{ textAlign: 'center' }} data-testid="coins">
             <Typography
                 variant='h4'
                 style={{
