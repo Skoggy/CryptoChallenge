@@ -24,6 +24,7 @@ export const SelectButton = ({ children, selected, onClick }) => {
     const classes = useStyles();
     return (
         <span
+            data-testid="select-button-test"
             className={classes.selectbutton}
             onClick={onClick}>
             {children}
